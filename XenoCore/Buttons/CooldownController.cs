@@ -24,7 +24,7 @@ namespace XenoCore.Buttons {
 		}
 
 		public static CooldownController FromConstant(float ConstantCooldown) {
-			return new CooldownController(new ConstantProvider(ConstantCooldown));
+			return new CooldownController(new ConstantNumberProvider(ConstantCooldown));
 		}
 
 		public static CooldownController FromOption(string Prefix, string OptionName = "cooldown",
@@ -75,18 +75,6 @@ namespace XenoCore.Buttons {
 
 		public void UpdateForExile(ExileController Exile) {
 			LastUsed = DateTime.UtcNow.AddMilliseconds(Exile.Duration);
-		}
-
-		private class ConstantProvider : INumberProvider {
-			private readonly float Value;
-
-			public ConstantProvider(float Value) {
-				this.Value = Value;
-			}
-
-			public float GetValue() {
-				return Value;
-			}
 		}
 	}
 }

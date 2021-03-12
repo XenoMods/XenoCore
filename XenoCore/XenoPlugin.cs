@@ -11,6 +11,7 @@ using XenoCore.Override.Map.Components;
 using XenoCore.Override.Tasks;
 using XenoCore.Override.Usable;
 using XenoCore.Override.Vents;
+using XenoCore.Skin;
 using XenoCore.Utils;
 
 namespace XenoCore {
@@ -50,6 +51,8 @@ namespace XenoCore {
 
 			CustomMapController.Init();
 			PseudoComponentsRegistry.Init();
+			
+			SkinsController.Init();
 
 			VersionsList.Add("XenoCore", Version, true);
 			VersionsList.Init();

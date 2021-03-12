@@ -28,15 +28,40 @@ namespace XenoCore.Events {
 	}
 	
 	public static class EventsController {
+		// Инициализация всей игры (главное меню)
 		public static readonly EventDefinition GAME_INIT = new EventDefinition("GAME_INIT");
+		
+		// Вызывается перед стартом игровой сессии, нужно для очистки временных переменных
 		public static readonly EventDefinition RESET_ALL = new EventDefinition("RESET_ALL");
+		
+		// Вызывается после полной инициализации игровой сессии
 		public static readonly EventDefinition GAME_STARTED = new EventDefinition("GAME_STARTED");
+		
+		// Вызывается при инициализации карты после GAME_STARTED
 		public static readonly EventDefinition MAP_INIT = new EventDefinition("MAP_INIT");
+		
+		// Вызывается при старте игры хостом
 		public static readonly EventDefinition HOST_START_GAME = new EventDefinition("HOST_START_GAME");
+		
+		// Вызывается при изменении настроек игры
 		public static readonly EventDefinition PREFERENCES_CHANGED = new EventDefinition("PREFERENCES_CHANGED");
+		
+		// Вызывается при первом старте HudManager
+		public static readonly EventDefinition HUD_INIT = new EventDefinition("HUD_INIT");
 
 		internal static void Init() {
 			HandleRpcPatch.AddListener(new EventsNetworkListener());
+		}
+		
+		[HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
+		private static class HudStartPatch {
+			private static bool Initialized = false;
+			
+			public static void Postfix() {
+				if (Initialized) return;
+				
+				HUD_INIT.Post();
+			}
 		}
 		
 		[HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]

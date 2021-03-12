@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using HarmonyLib;
 using Reactor.Patches;
 using UnityEngine;
+using XenoCore.Events;
 
 namespace XenoCore.Utils {
 	/**
@@ -52,6 +53,7 @@ namespace XenoCore.Utils {
 		}
 
 		internal static void Init() {
+			EventsController.HUD_INIT.Register(CheckVersions);
 			ReactorVersionShower.TextUpdated += Text => {
 				VersionRenderer = Text;
 				OriginalText = Text.Text;
@@ -95,14 +97,6 @@ namespace XenoCore.Utils {
 		internal class CheckVersionResult {
 			[DataMember] public bool success { get; set; }
 			[DataMember] public string message { get; set; }
-		}
-	}
-
-
-	[HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
-	public class VersionCheckPatch {
-		public static void Postfix() {
-			VersionsList.CheckVersions();
 		}
 	}
 }

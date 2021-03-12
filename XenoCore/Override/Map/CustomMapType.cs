@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using XenoCore.Locale;
 using XenoCore.Override.Map.Components;
 using XenoCore.Utils;
-using NotImplementedException = System.NotImplementedException;
 
 namespace XenoCore.Override.Map {
 	public class CustomMapType {

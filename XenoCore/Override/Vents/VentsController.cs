@@ -4,7 +4,6 @@ using HarmonyLib;
 using UnityEngine;
 using XenoCore.Events;
 using XenoCore.Override.Map;
-using XenoCore.Utils;
 
 namespace XenoCore.Override.Vents {
 	public static class CustomVentsController {

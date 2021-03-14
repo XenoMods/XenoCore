@@ -7,9 +7,9 @@ namespace XenoCore.Utils {
 		public static PlayerControl ClosestPlayer;
 		public static double ClosestDistance;
 
-		public static PlayerControl GetPlayerById(byte id) {
+		public static PlayerControl GetPlayerById(byte Id) {
 			foreach (var player in PlayerControl.AllPlayerControls) {
-				if (player.PlayerId == id) {
+				if (player.PlayerId == Id) {
 					return player;
 				}
 			}

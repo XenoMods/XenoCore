@@ -1,5 +1,5 @@
 namespace XenoCore.Utils {
-	public static class Message {
+	public static class MessageUtils {
 		public static void DisconnectShow(string Message) {
 			var Client = AmongUsClient.Instance;
 

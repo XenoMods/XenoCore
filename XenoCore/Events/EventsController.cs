@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HarmonyLib;
-using Hazel;
-using XenoCore.Network;
+using XenoCore.Core;
 using XenoCore.Utils;
 
 namespace XenoCore.Events {
@@ -49,10 +48,6 @@ namespace XenoCore.Events {
 		// Вызывается при первом старте HudManager
 		public static readonly EventDefinition HUD_INIT = new EventDefinition("HUD_INIT");
 
-		internal static void Init() {
-			HandleRpcPatch.AddListener(new EventsNetworkListener());
-		}
-		
 		[HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
 		private static class HudStartPatch {
 			private static bool Initialized = false;
@@ -87,7 +82,7 @@ namespace XenoCore.Events {
 		private static class ResetAllPatch {
 			public static void Prefix() {
 				RESET_ALL.Post();
-				Utils.Network.Send((byte) EventsRPC.ResetAll);
+				ResetAllMessage.INSTANCE.Send();
 			}
 		}
 
@@ -104,21 +99,6 @@ namespace XenoCore.Events {
 		internal static class ReloadPreferencesPatch {
 			public static void Postfix() {
 				PREFERENCES_CHANGED.Post();
-			}
-		}
-
-		private enum EventsRPC : byte {
-			ResetAll = 40,
-		}
-
-		private class EventsNetworkListener : RPCListener {
-			public void Handle(byte PacketId, MessageReader Reader) {
-				switch (PacketId) {
-					case (byte) EventsRPC.ResetAll: {
-						RESET_ALL.Post();
-						break;
-					}
-				}
 			}
 		}
 	}

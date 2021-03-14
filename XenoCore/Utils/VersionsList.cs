@@ -1,18 +1,16 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Serialization;
-using HarmonyLib;
 using Reactor.Patches;
-using UnityEngine;
+using XenoCore.Core;
 using XenoCore.Events;
 
 namespace XenoCore.Utils {
 	/**
 	 * Управляет выводом названий и версий загруженных модов
 	 */
-	public static class VersionsList {
+	internal static class VersionsList {
 		private const string CHECK_URL = "http://msys.northeurope.cloudapp.azure.com/public/repo/check.php";
-		private static readonly List<ModDefinition> Mods = new List<ModDefinition>();
 		private static TextRenderer VersionRenderer;
 		private static string OriginalText;
 
@@ -27,7 +25,7 @@ namespace XenoCore.Utils {
 			
 			var Errors = new List<string>();
 			
-			foreach (var Mod in Mods) {
+			foreach (var Mod in XenoMods.GetMods()) {
 				if (!Mod.CheckVersion) continue;
 
 				var Client = new WebClient();
@@ -48,7 +46,7 @@ namespace XenoCore.Utils {
 			}
 
 			if (Errors.Count > 0) {
-				Message.DisconnectShow(string.Join("\n", Errors));
+				MessageUtils.DisconnectShow(string.Join("\n", Errors));
 			}
 		}
 
@@ -61,35 +59,13 @@ namespace XenoCore.Utils {
 			};
 		}
 
-		public static void Add(string Id, string Version, bool CheckVersion = false) {
-			Mods.Add(new ModDefinition(Id, Version, CheckVersion));
-			Refresh();
-		}
-
-		private static void Refresh() {
+		internal static void Refresh() {
 			if (VersionRenderer == null) {
 				return;
 			}
 
-			VersionRenderer.Text = string.Join('\n', Mods)
-			                       + '\n' + ModDefinition.CLEAR_COLOR + OriginalText;
-		}
-
-		internal class ModDefinition {
-			public static readonly string CLEAR_COLOR = $"[{Color.white.ToHexRGBA()}]";
-			public readonly string Id;
-			public readonly string Version;
-			public readonly bool CheckVersion;
-
-			public ModDefinition(string id, string version, bool checkVersion) {
-				Id = id;
-				Version = version;
-				CheckVersion = checkVersion;
-			}
-
-			public override string ToString() {
-				return $"{CLEAR_COLOR}{Id} v{Version}";
-			}
+			VersionRenderer.Text = string.Join('\n', XenoMods.GetMods())
+			                       + '\n' + Globals.FORMAT_WHITE + OriginalText;
 		}
 
 		// ReSharper disable once ClassNeverInstantiated.Global

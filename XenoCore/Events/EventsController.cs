@@ -18,7 +18,7 @@ namespace XenoCore.Events {
 		}
 
 		internal void Post() {
-			ConsoleTools.Info($"Event: {EventName}");
+			ConsoleTools.Light($"Event: {EventName}");
 			
 			foreach (var Listener in Listeners) {
 				Listener();
@@ -47,33 +47,53 @@ namespace XenoCore.Events {
 		
 		// Вызывается при первом старте HudManager
 		public static readonly EventDefinition HUD_INIT = new EventDefinition("HUD_INIT");
+		
+		// Вызывается при каждом чистом старте HudManager
+		public static readonly EventDefinition HUD_START = new EventDefinition("HUD_START");
 
 		[HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
 		private static class HudStartPatch {
-			private static bool Initialized = false;
-			
-			public static void Postfix() {
-				if (Initialized) return;
+			public static bool Initialized;
+
+			public static bool Prefix(HudManager __instance) {
+				if (Initialized) {
+					HUD_START.Post();
+					return true;
+				}
 				
 				HUD_INIT.Post();
+				HUD_START.Post();
+				Initialized = true;
+
+				__instance.SetTouchType(SaveManager.ControlMode);
+				
+				return false;
+			}
+		}
+		
+		[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+		private static class HudUpdatePatch {
+			public static bool Prefix() {
+				return HudStartPatch.Initialized;
 			}
 		}
 		
 		[HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
 		private static class StartPatch {
-			private static bool Initialized = false;
+			private static bool Initialized;
 			
 			public static void Postfix() {
 				if (Initialized) return;
 				
 				GAME_INIT.Post();
+				Initialized = true;
 			}
 		}
 		
 		[HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.BeginGame))]
 		private static class HostStartGamePatch {
 			public static void Prefix() {
-				if (!AmongUsClient.Instance.AmHost) return;
+				if (!Game.IsHost()) return;
 				HOST_START_GAME.Post();
 			}
 		}

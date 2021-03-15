@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using XenoCore.Events;
 using XenoCore.Override.Vents;
+using XenoCore.Utils;
 
 namespace XenoCore.Override.Map.Components {
 	public abstract class PseudoComponent {
@@ -32,8 +33,9 @@ namespace XenoCore.Override.Map.Components {
 			= new Dictionary<string, PseudoComponentBuilder>();
 
 		internal static void Init() {
+			Builders.Clear();
+			
 			EventsController.GAME_INIT.Register(() => {
-				Builders.Clear();
 				Register(new SpawnComponentBuilder());
 				Register(new VentComponentBuilder());
 			});

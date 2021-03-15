@@ -32,6 +32,11 @@ namespace XenoCore.Commands {
 			Commands.Add(Command.Name(), Command);
 		}
 
+		public static void UsageError(this ICommand Command, ChatCallback Callback, string ErrorText) {
+			Callback.Send(ErrorText);
+			Help(Callback, Command.Name());
+		}
+
 		public static void Help(ChatCallback Callback, string CommandName = null) {
 			if (CommandName == null) {
 				foreach (var Command in Commands.Values) {

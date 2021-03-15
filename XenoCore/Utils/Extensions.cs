@@ -202,6 +202,31 @@ namespace XenoCore.Utils {
 			}
 		}
 	}
+	
+	public static class LogLevels {
+		public static readonly LogLevel LIGHT = new LogLevel("LIGHT",
+			ConsoleColor.DarkGreen, false, true);
+		
+		public static readonly LogLevel INFO = new LogLevel("INFO",
+			ConsoleColor.Yellow, true, true);
+		
+		public static readonly LogLevel ERROR = new LogLevel("ERROR",
+			ConsoleColor.Red, true, true);
+		
+		public class LogLevel {
+			public readonly string Name;
+			public readonly ConsoleColor Color;
+			public readonly bool PrintChat;
+			public readonly bool PrintConsole;
+
+			public LogLevel(string Name, ConsoleColor Color, bool PrintChat, bool PrintConsole) {
+				this.Name = Name;
+				this.Color = Color;
+				this.PrintChat = PrintChat;
+				this.PrintConsole = PrintConsole;
+			}
+		}
+	}
 
 	public static class ConsoleTools {
 		public static string ToHexString(this byte[] Data) {
@@ -222,25 +247,35 @@ namespace XenoCore.Utils {
 			Controller.AddChat(PlayerControl.LocalPlayer, $"({Stamp}) {Message}");
 		}
 
-		private static void AddChat(string Level, ConsoleColor Color, string Message) {
-			var Text = $"({Level}) {Message}";
+		private static void AddChat(LogLevels.LogLevel Level, string Message) {
+			var Text = $"({Level.Name}) {Message}";
 
-			System.Console.ForegroundColor = Color;
-			System.Console.WriteLine(Text);
-			System.Console.ForegroundColor = ConsoleColor.White;
+			if (Level.PrintConsole) {
+				System.Console.ForegroundColor = Level.Color;
+				System.Console.WriteLine(Text);
+				System.Console.ForegroundColor = ConsoleColor.White;
+			}
 
-			if (HudManager.Instance == null) return;
+			if (!Level.PrintChat || HudManager.Instance == null) return;
 			if (HudManager.Instance.Chat != null) {
 				HudManager.Instance.Chat.AddChat(Text);
 			}
 		}
 
+		public static void Log(LogLevels.LogLevel Level, string Message) {
+			AddChat(Level, Message);
+		}
+		
+		public static void Light(string Message) {
+			AddChat(LogLevels.LIGHT, Message);
+		}
+
 		public static void Info(string Message) {
-			AddChat("INFO", ConsoleColor.Yellow, Message);
+			AddChat(LogLevels.INFO, Message);
 		}
 
 		public static void Error(string Message) {
-			AddChat("ERROR", ConsoleColor.Red, Message);
+			AddChat(LogLevels.ERROR, Message);
 		}
 
 		public static void Except(Exception Exception) {

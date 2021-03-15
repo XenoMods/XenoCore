@@ -5,6 +5,7 @@ using HarmonyLib;
 using Reactor;
 using XenoCore.Core;
 using XenoCore.CustomOptions;
+using XenoCore.Events;
 using XenoCore.Locale;
 using XenoCore.Override.Map;
 using XenoCore.Override.Map.Components;
@@ -38,6 +39,13 @@ namespace XenoCore {
 			RegisterInIl2CppAttribute.Register();
 			RegisterCustomRpcAttribute.Register(this);
 
+			EventsController.GAME_INIT.Register(() => {
+				if (!SaveManager.CensorChat) return;
+				
+				ConsoleTools.Light("Turning off censor chat");
+				SaveManager.CensorChat = false;
+			});
+			
 			AudioManager.Init();
 			LanguageManager.Init();
 			XenoLang.Init();
@@ -54,7 +62,7 @@ namespace XenoCore {
 			SkinsController.Init();
 			
 			VersionsList.Init();
-			
+
 			Mod.RegisterMessage(ResetAllMessage.INSTANCE);
 			Mod.RegisterMessage(SynchronizeXenoModsMessage.INSTANCE);
 		}

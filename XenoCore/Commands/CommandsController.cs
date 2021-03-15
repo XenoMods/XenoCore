@@ -8,14 +8,12 @@ namespace XenoCore.Commands {
 	[HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
 	public class ChatPatch {
 		public static bool Prefix(ChatController __instance) {
-			if (__instance.TextArea.text.StartsWith("/")) {
-				CommandsController.Run(new ChatCallback(__instance),
-					__instance.TextArea.text);
-				__instance.TextArea.Clear();
-				return false;
-			}
-
-			return true;
+			if (!__instance.TextArea.text.StartsWith("/")) return true;
+			
+			CommandsController.Run(new ChatCallback(__instance),
+				__instance.TextArea.text);
+			__instance.TextArea.Clear();
+			return false;
 		}
 	}
 	
@@ -39,9 +37,7 @@ namespace XenoCore.Commands {
 
 		public static void Help(ChatCallback Callback, string CommandName = null) {
 			if (CommandName == null) {
-				foreach (var Command in Commands.Values) {
-					Callback.Usage(Command.Usage());
-				}
+				Callback.Usage(Commands.Values.Select(Command => Command.Usage()));
 			} else {
 				if (Commands.ContainsKey(CommandName)) {
 					Callback.Usage(Commands[CommandName].Usage());

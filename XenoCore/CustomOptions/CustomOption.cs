@@ -473,7 +473,7 @@ namespace XenoCore.CustomOptions {
 			Value = value;
 
 			if (GameSetting != null && AmongUsClient.Instance && PlayerControl.LocalPlayer &&
-			    AmongUsClient.Instance.AmHost) Rpc.Instance.Send(new Rpc.Data(this));
+			   Game.IsHost()) Rpc.Instance.Send(new Rpc.Data(this));
 
 			try {
 				if (GameSetting is ToggleOption toggle) {

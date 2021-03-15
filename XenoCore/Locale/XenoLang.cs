@@ -54,6 +54,12 @@ namespace XenoCore.Locale {
 			Russian = "Использование: %1"
 		};
 		
+		public static readonly LanguageEntry USAGE_ALL = new LanguageEntry {
+			Id = "xeno.commands.usage_all",
+			English = "All commands:\n%1",
+			Russian = "Все команды:\n%1"
+		};
+		
 		public static readonly LanguageEntry MAPS_CUSTOM = new LanguageEntry {
 			Id = "xeno.maps.custom",
 			English = "Map Override",
@@ -76,6 +82,7 @@ namespace XenoCore.Locale {
 			LanguageManager.Add(COMMAND_NOT_FOUND);
 			LanguageManager.Add(AVAILABLE_COMMANDS);
 			LanguageManager.Add(USAGE);
+			LanguageManager.Add(USAGE_ALL);
 			
 			LanguageManager.Add(MAPS_CUSTOM);
 			LanguageManager.Add(MAPS_NONE);

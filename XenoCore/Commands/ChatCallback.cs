@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using XenoCore.Locale;
 using XenoCore.Utils;
 
@@ -13,8 +16,18 @@ namespace XenoCore.Commands {
 			Controller.AddChat(Message);
 		}
 
+		private static string Prepare(string Source) {
+			return Source.Replace('[', '{')
+				.Replace(']', '}');
+		}
+
 		public void Usage(string UsageText) {
-			Send(XenoLang.USAGE.Get().Replace("%1", UsageText));
+			Send(XenoLang.USAGE.Get().Replace("%1", Prepare(UsageText)));
+		}
+		
+		public void Usage(IEnumerable<string> Usages) {
+			Send(XenoLang.USAGE_ALL.Get().Replace("%1",
+				string.Join("\n", Usages.Select(Prepare))));
 		}
 	}
 }
